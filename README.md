@@ -5,7 +5,7 @@ I'm learning linear algebra with Rust.
 ## Progress
 
 | Shilov | Topic | Status |
-|---|---|---|---|
+|---|---|---|
 | §1.1 | Complex number type | in progress |
 
 ## Run
