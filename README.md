@@ -16,7 +16,7 @@ I'm learning linear algebra with Rust.
 
 ## Credits
 
-The exercise sheets were written with help from Claude, but all the code here is mine. The maths follows G. E. Shilov, *Linear Algebra*.
+I write the code here myself, with Claude as a tutor and reviewer. Where Claude wrote code, the commit says so in a Co-Authored-By line. The maths follows G. E. Shilov, *Linear Algebra*.
 
 ## License
 
