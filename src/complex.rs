@@ -1,21 +1,29 @@
+/// A complex number `re + i*im`, with both parts stored as `f64` (Shilov §1.12c).
 pub struct Complex {
+    /// The real part.
     pub re: f64,
+    /// The imaginary part.
     pub im: f64,
 }
 
 impl Complex {
+    /// Builds the complex number `re + i*im`.
     pub fn new(re: f64, im: f64) -> Self {
         Complex { re, im }
     }
 
+    /// Returns the real part.
     pub fn re(&self) -> f64 {
         self.re
     }
 
+    /// Returns the imaginary part.
     pub fn im(&self) -> f64 {
         self.im
     }
 
+    /// Returns the sum `self + other`, adding real and imaginary parts separately
+    /// (the sum rule in Shilov §1.12c).
     pub fn add(&self, other: &Complex) -> Complex {
         Complex {
             re: self.re + other.re,
@@ -28,9 +36,9 @@ impl Complex {
 mod tests {
     use super::*;
 
+    /// `new` stores both parts: z = 3 + 4i.
     #[test]
     fn complex_stores_real_and_imaginary_parts() {
-        // Create the complex number z = 3 + 4i
         let z: Complex = Complex::new(3.0, 4.0);
         assert!((z.re() - 3.0).abs() < 1e-12);
         assert!((z.im() - 4.0).abs() < 1e-12);
@@ -41,18 +49,18 @@ mod tests {
         (a.re - b.re).abs() < 1e-12 && (a.im - b.im).abs() < 1e-12
     }
 
+    /// Axiom 1: a + b = b + a
     #[test]
     fn addition_is_commutative() {
-        // Axiom 1: a + b = b + a
         let a: Complex = Complex::new(0.1, -2.5);
         let b: Complex = Complex::new(0.2, 4.0);
 
         assert!(close(&a.add(&b), &b.add(&a)));
     }
 
+    /// Axiom 2: (a + b) + c = a + (b + c)
     #[test]
     fn addition_is_associative() {
-        // Axiom 2: (a + b) + c = a + (b + c)
         let a: Complex = Complex::new(0.1, -2.5);
         let b: Complex = Complex::new(0.2, 4.0);
         let c: Complex = Complex::new(0.3, 0.7);
@@ -62,9 +70,9 @@ mod tests {
         assert!(close(&left, &right));
     }
 
+    /// Axiom 3: 0 + a = a
     #[test]
     fn zero_plus_a_is_a() {
-        // Axiom 3: 0 + a = a
         let zero: Complex = Complex::new(0.0, 0.0);
         let a: Complex = Complex::new(0.1, -2.5);
 
