@@ -6,7 +6,9 @@ I'm learning linear algebra with Rust.
 
 | Shilov | Topic | Status |
 |---|---|---|
-| §1.1 | Complex number type | in progress |
+| §1.1 | Number fields | in progress |
+| §1.2 | Problems of the theory of systems of linear equations | not started |
+| §1.3 | Determinants of order n | not started |
 
 ## Run
 
