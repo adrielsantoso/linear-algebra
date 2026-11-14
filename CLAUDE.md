@@ -1,6 +1,6 @@
-# quantum-foundations
+# linear-algebra
 
-A learning repository. I am learning Rust and linear algebra (Shilov, in order) by building each idea as a small tested exercise. Topics follow the branches of my field map, `quantum-biosensing-roadmap.md`. Later mini projects (a toy magnetometer) live in folders here.
+A learning repository. I am learning Rust and linear algebra (Shilov, in order) by building each idea as a small tested exercise.
 
 ## How to work with me in this repo
 

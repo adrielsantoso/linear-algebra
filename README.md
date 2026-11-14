@@ -1,4 +1,4 @@
-# quantum-foundations
+# linear-algebra
 
 I'm learning linear algebra with Rust.
 

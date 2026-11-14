@@ -3,5 +3,5 @@
 version = 4
 
 [[package]]
-name = "quantum-foundations"
+name = "linear-algebra"
 version = "0.1.0"
