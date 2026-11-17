@@ -22,6 +22,14 @@ impl Complex {
         self.im
     }
 
+    /// Returns the negative `-self`, negating both real and imaginary parts.
+    pub fn neg(&self) -> Complex {
+        Complex {
+            re: -self.re,
+            im: -self.im,
+        }
+    }
+
     /// Returns the sum `self + other`, adding real and imaginary parts
     /// using the sum rule in Shilov §1.12c.
     pub fn add(&self, other: &Complex) -> Complex {
@@ -29,6 +37,11 @@ impl Complex {
             re: self.re + other.re,
             im: self.im + other.im,
         }
+    }
+
+    /// Returns the difference `self - other`, computed as `self + (-other)`.
+    pub fn sub(&self, other: &Complex) -> Complex {
+        self.add(&other.neg())
     }
 
     /// Returns the product `self * other`, multiplying real and imaginary parts
@@ -86,6 +99,31 @@ mod tests {
         let a: Complex = Complex::new(0.1, -2.5);
 
         assert!(close(&zero.add(&a), &a));
+    }
+
+    /// Axiom 4: a + (-a) = 0
+    #[test]
+    fn a_plus_neg_a_is_zero() {
+        let a: Complex = Complex::new(0.1, -2.5);
+        let zero: Complex = Complex::new(0.0, 0.0);
+
+        assert!(close(&a.add(&a.neg()), &zero));
+    }
+
+    /// -(-a) = a
+    #[test]
+    fn neg_of_neg_a_is_a() {
+        let a: Complex = Complex::new(0.1, -2.5);
+        assert!(close(&a.neg().neg(), &a));
+    }
+    
+    /// (5 + 3i) - (2 + i) = 3 + 2i.
+    #[test]
+    fn sub_subtracts_parts() {
+        let a: Complex = Complex::new(5.0, 3.0);
+        let b: Complex = Complex::new(2.0, 1.0);
+
+        assert!(close(&a.sub(&b), &Complex::new(3.0, 2.0)));
     }
 
     /// Axiom 5: a * b = b * a
