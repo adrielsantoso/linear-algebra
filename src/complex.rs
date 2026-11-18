@@ -20,16 +20,6 @@ impl Complex {
         Complex { re, im }
     }
 
-    /// Returns the real part.
-    pub fn re(&self) -> f64 {
-        self.re
-    }
-
-    /// Returns the imaginary part.
-    pub fn im(&self) -> f64 {
-        self.im
-    }
-
     /// Returns the negative `-self`, negating both real and imaginary parts.
     pub fn neg(&self) -> Complex {
         Complex {
@@ -85,9 +75,9 @@ mod tests {
     /// `new` stores both parts: z = 3 + 4i.
     #[test]
     fn complex_stores_real_and_imaginary_parts() {
-        let z: Complex = Complex::new(3.0, 4.0);
-        assert!((z.re() - 3.0).abs() < 1e-12);
-        assert!((z.im() - 4.0).abs() < 1e-12);
+        let z = Complex::new(3.0, 4.0);
+        assert!((z.re - 3.0).abs() < 1e-12);
+        assert!((z.im - 4.0).abs() < 1e-12);
     }
 
     /// True when both parts of `a` and `b` differ by less than 1e-12.
@@ -98,8 +88,8 @@ mod tests {
     /// Axiom 1: a + b = b + a
     #[test]
     fn addition_is_commutative() {
-        let a: Complex = Complex::new(0.1, -2.5);
-        let b: Complex = Complex::new(0.2, 4.0);
+        let a = Complex::new(0.1, -2.5);
+        let b = Complex::new(0.2, 4.0);
 
         assert!(close(&a.add(&b), &b.add(&a)));
     }
@@ -107,20 +97,20 @@ mod tests {
     /// Axiom 2: (a + b) + c = a + (b + c)
     #[test]
     fn addition_is_associative() {
-        let a: Complex = Complex::new(0.1, -2.5);
-        let b: Complex = Complex::new(0.2, 4.0);
-        let c: Complex = Complex::new(0.3, 0.7);
+        let a = Complex::new(0.1, -2.5);
+        let b = Complex::new(0.2, 4.0);
+        let c = Complex::new(0.3, 0.7);
 
-        let left: Complex = (a.add(&b)).add(&c);
-        let right: Complex = a.add(&b.add(&c));
+        let left = (a.add(&b)).add(&c);
+        let right = a.add(&b.add(&c));
         assert!(close(&left, &right));
     }
 
     /// Axiom 3: 0 + a = a
     #[test]
     fn zero_plus_a_is_a() {
-        let zero: Complex = Complex::new(0.0, 0.0);
-        let a: Complex = Complex::new(0.1, -2.5);
+        let zero = Complex::new(0.0, 0.0);
+        let a = Complex::new(0.1, -2.5);
 
         assert!(close(&zero.add(&a), &a));
     }
@@ -128,8 +118,8 @@ mod tests {
     /// Axiom 4: a + (-a) = 0
     #[test]
     fn a_plus_neg_a_is_zero() {
-        let a: Complex = Complex::new(0.1, -2.5);
-        let zero: Complex = Complex::new(0.0, 0.0);
+        let a = Complex::new(0.1, -2.5);
+        let zero = Complex::new(0.0, 0.0);
 
         assert!(close(&a.add(&a.neg()), &zero));
     }
@@ -137,15 +127,15 @@ mod tests {
     /// -(-a) = a
     #[test]
     fn neg_of_neg_a_is_a() {
-        let a: Complex = Complex::new(0.1, -2.5);
+        let a = Complex::new(0.1, -2.5);
         assert!(close(&a.neg().neg(), &a));
     }
 
     /// (5 + 3i) - (2 + i) = 3 + 2i.
     #[test]
     fn sub_subtracts_parts() {
-        let a: Complex = Complex::new(5.0, 3.0);
-        let b: Complex = Complex::new(2.0, 1.0);
+        let a = Complex::new(5.0, 3.0);
+        let b = Complex::new(2.0, 1.0);
 
         assert!(close(&a.sub(&b), &Complex::new(3.0, 2.0)));
     }
@@ -153,8 +143,8 @@ mod tests {
     /// Axiom 5: a * b = b * a
     #[test]
     fn multiplication_is_commutative() {
-        let a: Complex = Complex::new(0.1, -2.5);
-        let b: Complex = Complex::new(0.2, 4.0);
+        let a = Complex::new(0.1, -2.5);
+        let b = Complex::new(0.2, 4.0);
 
         assert!(close(&a.mul(&b), &b.mul(&a)));
     }
@@ -162,20 +152,20 @@ mod tests {
     /// Axiom 6: (a * b) * c = a * (b * c)
     #[test]
     fn multiplication_is_associative() {
-        let a: Complex = Complex::new(0.1, -2.5);
-        let b: Complex = Complex::new(0.2, 4.0);
-        let c: Complex = Complex::new(0.3, 0.7);
+        let a = Complex::new(0.1, -2.5);
+        let b = Complex::new(0.2, 4.0);
+        let c = Complex::new(0.3, 0.7);
 
-        let left: Complex = (a.mul(&b)).mul(&c);
-        let right: Complex = a.mul(&b.mul(&c));
+        let left = (a.mul(&b)).mul(&c);
+        let right = a.mul(&b.mul(&c));
         assert!(close(&left, &right));
     }
 
     /// Axiom 7: 1 * a = a
     #[test]
     fn one_times_a_is_a() {
-        let one: Complex = Complex::new(1.0, 0.0);
-        let a: Complex = Complex::new(0.1, -2.5);
+        let one = Complex::new(1.0, 0.0);
+        let a = Complex::new(0.1, -2.5);
 
         assert!(close(&one.mul(&a), &a));
     }
@@ -183,8 +173,8 @@ mod tests {
     /// Axiom 8: a * (1 / a) = 1, for a != 0
     #[test]
     fn a_times_recip_is_one() {
-        let a: Complex = Complex::new(0.1, -2.5);
-        let one: Complex = Complex::new(1.0, 0.0);
+        let a = Complex::new(0.1, -2.5);
+        let one = Complex::new(1.0, 0.0);
 
         assert!(close(&a.mul(&a.recip().unwrap()), &one));
     }
@@ -192,30 +182,30 @@ mod tests {
     /// recip(0) returns an error.
     #[test]
     fn recip_of_zero_is_error() {
-        let zero: Complex = Complex::new(0.0, 0.0);
+        let zero = Complex::new(0.0, 0.0);
         assert_eq!(zero.recip(), Err(ComplexError::DivisionByZero));
     }
 
     /// a / 0 returns an error.
     #[test]
     fn a_div_zero_is_error() {
-        let a: Complex = Complex::new(0.1, -2.5);
-        let zero: Complex = Complex::new(0.0, 0.0);
+        let a = Complex::new(0.1, -2.5);
+        let zero = Complex::new(0.0, 0.0);
         assert_eq!(a.div(&zero), Err(ComplexError::DivisionByZero));
     }
 
     /// 1 / (1 / a) = a, for a != 0
     #[test]
     fn recip_of_recip_is_a() {
-        let a: Complex = Complex::new(0.1, -2.5);
+        let a = Complex::new(0.1, -2.5);
         assert!(close(&a.recip().unwrap().recip().unwrap(), &a));
     }
 
     /// (2 + 4i) / (1 + i) = 3 + i.
     #[test]
     fn div_divides_parts() {
-        let a: Complex = Complex::new(2.0, 4.0);
-        let b: Complex = Complex::new(1.0, 1.0);
+        let a = Complex::new(2.0, 4.0);
+        let b = Complex::new(1.0, 1.0);
 
         assert!(close(&a.div(&b).unwrap(), &Complex::new(3.0, 1.0)));
     }
@@ -223,20 +213,20 @@ mod tests {
     /// Axiom 9: a * (b + c) = a * b + a * c
     #[test]
     fn multiplication_distributes_over_addition() {
-        let a: Complex = Complex::new(0.1, -2.5);
-        let b: Complex = Complex::new(0.2, 4.0);
-        let c: Complex = Complex::new(0.3, 0.7);
+        let a = Complex::new(0.1, -2.5);
+        let b = Complex::new(0.2, 4.0);
+        let c = Complex::new(0.3, 0.7);
 
-        let left: Complex = a.mul(&b.add(&c));
-        let right: Complex = a.mul(&b).add(&a.mul(&c));
+        let left = a.mul(&b.add(&c));
+        let right = a.mul(&b).add(&a.mul(&c));
         assert!(close(&left, &right));
     }
 
     /// i^2 = -1
     #[test]
     fn i_squared_is_minus_one() {
-        let i: Complex = Complex::new(0.0, 1.0);
-        let minus_one: Complex = Complex::new(-1.0, 0.0);
+        let i = Complex::new(0.0, 1.0);
+        let minus_one = Complex::new(-1.0, 0.0);
 
         assert!(close(&i.mul(&i), &minus_one));
     }
