@@ -4,11 +4,11 @@ I'm learning linear algebra with Rust.
 
 ## Progress
 
-| Shilov | Topic | Status |
-|---|---|---|
-| §1.1 | Number fields | in progress |
-| §1.2 | Problems of the theory of systems of linear equations | not started |
-| §1.3 | Determinants of order n | not started |
+| Shilov | Topic | Code | Status |
+|---|---|---|---|
+| §1.1 | Number fields | `complex.rs`: complex numbers, tested against the nine field axioms | done |
+| §1.2 | Problems of the theory of systems of linear equations | | in progress |
+| §1.3 | Determinants of order n | | not started |
 
 ## Run
 
