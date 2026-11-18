@@ -1,9 +1,17 @@
 /// A complex number `re + i*im`, with both parts stored as `f64` (Shilov §1.12c).
+#[derive(Debug, PartialEq)]
 pub struct Complex {
     /// The real part.
     pub re: f64,
     /// The imaginary part.
     pub im: f64,
+}
+
+/// An error type for complex number operations.
+#[derive(Debug, PartialEq)]
+pub enum ComplexError {
+    /// Returned by `recip` and `div` when the number to invert is exactly zero.
+    DivisionByZero,
 }
 
 impl Complex {
@@ -30,8 +38,7 @@ impl Complex {
         }
     }
 
-    /// Returns the sum `self + other`, adding real and imaginary parts
-    /// using the sum rule in Shilov §1.12c.
+    /// Returns the sum `self + other`, adding real and imaginary parts using the sum rule in Shilov §1.12c.
     pub fn add(&self, other: &Complex) -> Complex {
         Complex {
             re: self.re + other.re,
@@ -44,13 +51,30 @@ impl Complex {
         self.add(&other.neg())
     }
 
-    /// Returns the product `self * other`, multiplying real and imaginary parts
-    /// using the product rule in Shilov §1.12c.
+    /// Returns the product `self * other`, multiplying real and imaginary parts using the product rule in Shilov §1.12c.
     pub fn mul(&self, other: &Complex) -> Complex {
         Complex {
             re: self.re * other.re - self.im * other.im,
             im: self.re * other.im + self.im * other.re,
         }
+    }
+
+    /// Returns the reciprocal `1/self`, computed as `1/(re + i*im) = re/(re^2 + im^2) - i*im/(re^2 + im^2)` if re² + im² is not 0.0.
+    pub fn recip(&self) -> Result<Complex, ComplexError> {
+        let denom = self.re * self.re + self.im * self.im;
+        if denom == 0.0 {
+            return Err(ComplexError::DivisionByZero);
+        }
+        Ok(Complex {
+            re: self.re / denom,
+            im: -self.im / denom,
+        })
+    }
+
+    /// Returns the quotient `self / other`, computed as `self * (1/other)`.
+    pub fn div(&self, other: &Complex) -> Result<Complex, ComplexError> {
+        let recip = other.recip()?;
+        Ok(self.mul(&recip))
     }
 }
 
@@ -116,7 +140,7 @@ mod tests {
         let a: Complex = Complex::new(0.1, -2.5);
         assert!(close(&a.neg().neg(), &a));
     }
-    
+
     /// (5 + 3i) - (2 + i) = 3 + 2i.
     #[test]
     fn sub_subtracts_parts() {
@@ -154,6 +178,46 @@ mod tests {
         let a: Complex = Complex::new(0.1, -2.5);
 
         assert!(close(&one.mul(&a), &a));
+    }
+
+    /// Axiom 8: a * (1 / a) = 1, for a != 0
+    #[test]
+    fn a_times_recip_is_one() {
+        let a: Complex = Complex::new(0.1, -2.5);
+        let one: Complex = Complex::new(1.0, 0.0);
+
+        assert!(close(&a.mul(&a.recip().unwrap()), &one));
+    }
+
+    /// recip(0) returns an error.
+    #[test]
+    fn recip_of_zero_is_error() {
+        let zero: Complex = Complex::new(0.0, 0.0);
+        assert_eq!(zero.recip(), Err(ComplexError::DivisionByZero));
+    }
+
+    /// a / 0 returns an error.
+    #[test]
+    fn a_div_zero_is_error() {
+        let a: Complex = Complex::new(0.1, -2.5);
+        let zero: Complex = Complex::new(0.0, 0.0);
+        assert_eq!(a.div(&zero), Err(ComplexError::DivisionByZero));
+    }
+
+    /// 1 / (1 / a) = a, for a != 0
+    #[test]
+    fn recip_of_recip_is_a() {
+        let a: Complex = Complex::new(0.1, -2.5);
+        assert!(close(&a.recip().unwrap().recip().unwrap(), &a));
+    }
+
+    /// (2 + 4i) / (1 + i) = 3 + i.
+    #[test]
+    fn div_divides_parts() {
+        let a: Complex = Complex::new(2.0, 4.0);
+        let b: Complex = Complex::new(1.0, 1.0);
+
+        assert!(close(&a.div(&b).unwrap(), &Complex::new(3.0, 1.0)));
     }
 
     /// Axiom 9: a * (b + c) = a * b + a * c
