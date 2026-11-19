@@ -179,14 +179,14 @@ mod tests {
         assert!(close(&a.mul(&a.recip().unwrap()), &one));
     }
 
-    /// recip(0) returns an error.
+    /// Error case: recip(0) gives Err(DivisionByZero).
     #[test]
     fn recip_of_zero_is_error() {
         let zero = Complex::new(0.0, 0.0);
         assert_eq!(zero.recip(), Err(ComplexError::DivisionByZero));
     }
 
-    /// a / 0 returns an error.
+    /// Error case: a / 0 gives Err(DivisionByZero).
     #[test]
     fn a_div_zero_is_error() {
         let a = Complex::new(0.1, -2.5);
