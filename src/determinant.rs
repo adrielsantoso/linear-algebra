@@ -22,6 +22,15 @@ pub fn sign(perm: &[usize]) -> i32 {
     }
 }
 
+/// Returns the permutation (1, 2, …, n), which has no inversions.
+pub fn identity(n: usize) -> Vec<usize> {
+    let mut v = Vec::new();
+    for i in 1..=n {
+        v.push(i);
+    }
+    v
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -60,5 +69,23 @@ mod tests {
     #[test]
     fn sign_of_1234_is_1() {
         assert_eq!(sign(&[1, 2, 3, 4]), 1);
+    }
+
+    /// identity(4) equals vec![1, 2, 3, 4].
+    #[test]
+    fn identity_of_4_is_1234() {
+        assert_eq!(identity(4), vec![1, 2, 3, 4]);
+    }
+
+    /// identity(0) equals vec![].
+    #[test]
+    fn identity_of_0_is_empty() {
+        assert_eq!(identity(0), vec![]);
+    }
+
+    /// sign(&identity(5)) is 1.
+    #[test]
+    fn sign_of_identity_of_5_is_1() {
+        assert_eq!(sign(&identity(5)), 1);
     }
 }
