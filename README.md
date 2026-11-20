@@ -9,6 +9,7 @@ I'm learning linear algebra with Rust.
 | §1.1 | Number fields | `complex.rs`: complex numbers, tested against the nine field axioms | done |
 | §1.2 | Problems of the theory of systems of linear equations | notes only: `notes/1.2-systems.md` | done |
 | §1.3 | Determinants of order n | `determinant.rs`: inversions, sign, permutations, det by definition; `notes/1.3-determinants.md` | done |
+| §1.4 | Properties of determinants | tests in `determinant.rs`: transpose, swaps, linearity, adding multiples, for columns and rows; `notes/1.4-properties.md` | done |
 
 ## Run
 
