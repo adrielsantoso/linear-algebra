@@ -378,4 +378,75 @@ mod tests {
             0.0
         ));
     }
+
+    /// Returns a copy of matrix m with its column j replaced with col.
+    fn with_column(m: &[Vec<f64>], j: usize, col: &[f64]) -> Vec<Vec<f64>> {
+        let mut result = m.to_vec();
+        for i in 0..result.len() {
+            result[i][j] = col[i];
+        }
+        result
+    }
+
+    /// Returns a combined vector λb + μc.
+    fn combine(lambda: f64, b: &[f64], mu: f64, c: &[f64]) -> Vec<f64> {
+        let mut result = vec![0.0; b.len()];
+        for i in 0..b.len() {
+            result[i] = lambda * b[i] + mu * c[i];
+        }
+        result
+    }
+
+    /// with_column of [[1, 2], [3, 4]], column 1 replaced by [9, 8], is [[1, 9], [3, 8]].
+    /// Exact comparison: with_column only copies values, with no arithmetic.
+    #[test]
+    fn with_column_2x2() {
+        assert_eq!(
+            with_column(&[vec![1.0, 2.0], vec![3.0, 4.0]], 1, &[9.0, 8.0]),
+            vec![vec![1.0, 9.0], vec![3.0, 8.0]]
+        );
+    }
+
+    /// combine(2.0, &[1.0, 2.0], 3.0, &[0.0, 1.0]) is [2, 7].
+    /// Exact comparison: small integer products and sums are exact in f64.
+    #[test]
+    fn combine_2x2() {
+        assert_eq!(combine(2.0, &[1.0, 2.0], 3.0, &[0.0, 1.0]), vec![2.0, 7.0]);
+    }
+
+    /// §1.44: D is linear in column 1: λ = 2.5, μ = −1.
+    #[test]
+    fn det_is_linear_in_a_column() {
+        let m = example_3x3();
+        let lambda = 2.5;
+        let b = vec![1.0, 2.0, 3.0];
+        let mu = -1.0;
+        let c = vec![4.0, 5.0, 6.0];
+        assert!(close_f64(
+            det(&with_column(&m, 1, &combine(lambda, &b, mu, &c))).unwrap(),
+            lambda * det(&with_column(&m, 1, &b)).unwrap()
+                + mu * det(&with_column(&m, 1, &c)).unwrap()
+        ));
+    }
+
+    /// §1.45: a common factor of a column comes outside: 3 times column 0 gives 3D.
+    #[test]
+    fn common_factor_of_a_column_comes_outside() {
+        let m = example_3x3();
+        let mut scaled_column = vec![0.0; m.len()];
+        for i in 0..m.len() {
+            scaled_column[i] = 3.0 * m[i][0];
+        }
+        assert!(close_f64(
+            det(&with_column(&m, 0, &scaled_column)).unwrap(),
+            3.0 * det(&m).unwrap()
+        ));
+    }
+
+    /// §1.46: a column of zeros gives D = 0.
+    #[test]
+    fn zero_column_gives_det_0() {
+        let m = example_3x3();
+        assert!(close_f64(det(&with_column(&m, 2, &[0.0; 3])).unwrap(), 0.0));
+    }
 }
