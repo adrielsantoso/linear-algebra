@@ -511,4 +511,55 @@ mod tests {
             3.0 * det(&m).unwrap()
         ));
     }
+
+    /// Returns a copy of m with rows a and b (0-based) swapped.
+    fn swap_rows(m: &[Vec<f64>], a: usize, b: usize) -> Vec<Vec<f64>> {
+        let mut result = m.to_vec();
+        result.swap(a, b);
+        result
+    }
+
+    /// §1.48: swapping rows 0 and 2 is transpose, swap columns 0 and 2, transpose.
+    /// Exact comparison: these only move values, with no arithmetic.
+    #[test]
+    fn swap_rows_is_swap_columns_of_transpose() {
+        let m = example_3x3();
+        assert_eq!(
+            swap_rows(&m, 0, 2),
+            transpose(&swap_columns(&transpose(&m), 0, 2))
+        );
+    }
+
+    /// §1.48 with §1.42: swapping rows 0 and 3 flips the sign of D.
+    #[test]
+    fn swap_far_apart_rows_flips_sign() {
+        let m = example_4x4();
+        assert!(close_f64(
+            det(&swap_rows(&m, 0, 3)).unwrap(),
+            -det(&m).unwrap()
+        ));
+    }
+
+    /// §1.48 with §1.43: rows 0 and 2 are both [0, 1, 2], so D = 0.
+    #[test]
+    fn matrix_with_equal_rows_has_det_0() {
+        assert!(close_f64(
+            det(&[
+                vec![0.0, 1.0, 2.0],
+                vec![3.0, 1.0, 3.0],
+                vec![0.0, 1.0, 2.0]
+            ])
+            .unwrap(),
+            0.0
+        ));
+    }
+
+    /// §1.48 with §1.47: adding 2.5 times row 0 to row 1 leaves D unchanged.
+    #[test]
+    fn adding_a_multiple_of_another_row_keeps_det() {
+        let m = example_3x3();
+        let mut new_matrix = m.clone();
+        new_matrix[1] = combine(1.0, &m[1], 2.5, &m[0]);
+        assert!(close_f64(det(&new_matrix).unwrap(), det(&m).unwrap()));
+    }
 }
