@@ -327,4 +327,55 @@ mod tests {
             det(&example_4x4()).unwrap()
         ));
     }
+
+    /// Swap columns of a matrix (0-based).
+    fn swap_columns(m: &[Vec<f64>], a: usize, b: usize) -> Vec<Vec<f64>> {
+        let mut result = m.to_vec();
+        for row in &mut result {
+            row.swap(a, b);
+        }
+        result
+    }
+
+    /// Swapping columns 0 and 2 of [[1, 2, 3], [4, 5, 6]] gives [[3, 2, 1], [6, 5, 4]].
+    /// Exact comparison: swap_columns only moves values, with no arithmetic.
+    #[test]
+    fn swap_columns_0_and_2_of_2x3() {
+        assert_eq!(
+            swap_columns(&[vec![1.0, 2.0, 3.0], vec![4.0, 5.0, 6.0]], 0, 2),
+            vec![vec![3.0, 2.0, 1.0], vec![6.0, 5.0, 4.0]]
+        );
+    }
+
+    /// §1.42, neighbouring columns: swap columns 0 and 1 of example_3x3(). det is close to −6.
+    #[test]
+    fn swap_neighbouring_columns_flips_sign() {
+        assert!(close_f64(
+            det(&swap_columns(&example_3x3(), 0, 1)).unwrap(),
+            -det(&example_3x3()).unwrap()
+        ));
+    }
+
+    /// §1.42, far-apart columns: swap columns 0 and 3 of example_4x4(). det is close to −12.
+    #[test]
+    fn swap_far_apart_columns_flips_sign() {
+        assert!(close_f64(
+            det(&swap_columns(&example_4x4(), 0, 3)).unwrap(),
+            -det(&example_4x4()).unwrap()
+        ));
+    }
+
+    /// §1.43: a 3×3 with two equal columns has det close to 0.
+    #[test]
+    fn matrix_with_equal_columns_has_det_0() {
+        assert!(close_f64(
+            det(&[
+                vec![0.0, 1.0, 0.0],
+                vec![3.0, 3.0, 3.0],
+                vec![1.0, 2.0, 1.0]
+            ])
+            .unwrap(),
+            0.0
+        ));
+    }
 }
