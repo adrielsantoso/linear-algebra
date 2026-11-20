@@ -449,4 +449,66 @@ mod tests {
         let m = example_3x3();
         assert!(close_f64(det(&with_column(&m, 2, &[0.0; 3])).unwrap(), 0.0));
     }
+
+    /// Returns column k (0-based) of matrix m as its own Vec.
+    fn column(m: &[Vec<f64>], k: usize) -> Vec<f64> {
+        let mut result = Vec::new();
+        for row in m {
+            result.push(row[k]);
+        }
+        result
+    }
+
+    /// Column 1 of [[1, 2], [3, 4]] is [2, 4].
+    /// Exact comparison: column only copies values, with no arithmetic.
+    #[test]
+    fn column_1_of_2x2() {
+        assert_eq!(column(&[vec![1.0, 2.0], vec![3.0, 4.0]], 1), vec![2.0, 4.0]);
+    }
+
+    /// §1.47: adding 2.5 times column 2 to column 0 leaves D unchanged.
+    #[test]
+    fn adding_a_multiple_of_another_column_keeps_det() {
+        let m = example_3x3();
+        let mut new_col = column(&m, 0);
+        for i in 0..new_col.len() {
+            new_col[i] += 2.5 * m[i][2];
+        }
+        assert!(close_f64(
+            det(&with_column(&m, 0, &new_col)).unwrap(),
+            det(&m).unwrap()
+        ));
+    }
+
+    /// §1.47b: adding 2.5 × column 0, −1.5 × column 2 and 0.5 × column 3
+    /// to column 1 leaves D unchanged.
+    #[test]
+    fn adding_multiples_of_several_columns_keeps_det() {
+        let m = example_4x4();
+        let mut new_col = column(&m, 1);
+        for i in 0..new_col.len() {
+            new_col[i] += 2.5 * m[i][0];
+            new_col[i] += (-1.5) * m[i][2];
+            new_col[i] += 0.5 * m[i][3];
+        }
+        assert!(close_f64(
+            det(&with_column(&m, 1, &new_col)).unwrap(),
+            det(&m).unwrap()
+        ));
+    }
+
+    /// §1.47 needs k ≠ j: adding 2 times column 0 to itself makes it
+    /// 3 times column 0, so D becomes 3D (§1.45), not D.
+    #[test]
+    fn adding_a_column_to_itself_scales_det() {
+        let m = example_3x3();
+        let mut new_col = column(&m, 0);
+        for i in 0..new_col.len() {
+            new_col[i] += 2.0 * m[i][0];
+        }
+        assert!(close_f64(
+            det(&with_column(&m, 0, &new_col)).unwrap(),
+            3.0 * det(&m).unwrap()
+        ));
+    }
 }
