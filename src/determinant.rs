@@ -206,19 +206,30 @@ mod tests {
         ));
     }
 
+    /// Create an example 3x3 matrix: [[2, 0, 1], [1, 3, 2], [1, 1, 2]].
+    fn example_3x3() -> Vec<Vec<f64>> {
+        vec![
+            vec![2.0, 0.0, 1.0],
+            vec![1.0, 3.0, 2.0],
+            vec![1.0, 1.0, 2.0],
+        ]
+    }
+
+    /// Create an example 4x4 matrix: [[2, 0, 1, 3], [1, 3, 2, 1], [1, 1, 2, 3], [3, 2, 0, 2]].
+    fn example_4x4() -> Vec<Vec<f64>> {
+        vec![
+            vec![2.0, 0.0, 1.0, 3.0],
+            vec![1.0, 3.0, 2.0, 1.0],
+            vec![1.0, 1.0, 2.0, 3.0],
+            vec![3.0, 2.0, 0.0, 2.0],
+        ]
+    }
+
     /// Order 3: [[2, 0, 1], [1, 3, 2], [1, 1, 2]] is 6,
     /// using the formula in Shilov §1.31, page 6.
     #[test]
     fn det_of_order_3_example_is_6() {
-        assert!(close_f64(
-            det(&[
-                vec![2.0, 0.0, 1.0],
-                vec![1.0, 3.0, 2.0],
-                vec![1.0, 1.0, 2.0]
-            ])
-            .unwrap(),
-            6.0
-        ));
+        assert!(close_f64(det(&example_3x3()).unwrap(), 6.0));
     }
 
     /// The 3×3 identity matrix (1 on the diagonal, 0 elsewhere) has determinant 1.
@@ -274,5 +285,46 @@ mod tests {
             det(&[vec![1.0, 2.0, 3.0], vec![4.0, 5.0, 6.0]]),
             Err(DeterminantError::NotSquare)
         );
+    }
+
+    /// Returns the transposed matrix.
+    fn transpose(m: &[Vec<f64>]) -> Vec<Vec<f64>> {
+        let rows = m.len();
+        let cols = m[0].len();
+        let mut result = vec![vec![0.0; rows]; cols];
+        for i in 0..rows {
+            for j in 0..cols {
+                result[j][i] = m[i][j];
+            }
+        }
+        result
+    }
+
+    /// Transpose of [[1, 2, 3], [4, 5, 6]] is [[1, 4], [2, 5], [3, 6]].
+    /// Exact comparison: transpose only copies values, with no arithmetic.
+    #[test]
+    fn transpose_of_2x3_matrix_is_3x2() {
+        assert_eq!(
+            transpose(&[vec![1.0, 2.0, 3.0], vec![4.0, 5.0, 6.0]]),
+            vec![vec![1.0, 4.0], vec![2.0, 5.0], vec![3.0, 6.0]]
+        );
+    }
+
+    /// §1.41: det(&transpose(&example_3x3())) is close to det(&example_3x3()), i.e. 6.
+    #[test]
+    fn det_of_transpose_equals_det_3x3() {
+        assert!(close_f64(
+            det(&transpose(&example_3x3())).unwrap(),
+            det(&example_3x3()).unwrap()
+        ));
+    }
+
+    /// §1.41: det(&transpose(&example_4x4())) is close to det(&example_4x4()), i.e. 12.
+    #[test]
+    fn det_of_transpose_equals_det_4x4() {
+        assert!(close_f64(
+            det(&transpose(&example_4x4())).unwrap(),
+            det(&example_4x4()).unwrap()
+        ));
     }
 }
